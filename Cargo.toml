@@ -18,7 +18,7 @@ from_bytes = ["dep:tempfile"]
 sdl2-bundled = ["sdl2/bundled"]
 
 [dependencies]
-egui = "0.23.0"
+egui = { git = "https://github.com/emilk/egui.git", default-features=false, features=["default_fonts"] }
 atomic = "0.5.3"
 ffmpeg-the-third = "1.2.2"
 anyhow = "1.0.75"
