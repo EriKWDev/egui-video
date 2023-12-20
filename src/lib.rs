@@ -159,7 +159,7 @@ pub struct Player {
     video_elapsed_ms_override: Option<i64>,
     subtitles_queue: SubtitleQueue,
     current_subtitles: Vec<Subtitle>,
-    input_path: String,
+    input_path: std::path::PathBuf,
 }
 
 #[derive(PartialEq, Clone, Copy, Debug)]
@@ -1053,7 +1053,8 @@ impl Player {
     }
 
     /// Create a new [`Player`].
-    pub fn new(ctx: &egui::Context, input_path: &String) -> Result<Self> {
+    pub fn new<P: Into<std::path::PathBuf>>(ctx: &egui::Context, input_path: P) -> Result<Self> {
+        let input_path = input_path.into();
         let input_context = input(&input_path)?;
         let video_stream = input_context
             .streams()
@@ -1089,8 +1090,9 @@ impl Player {
         let texture_handle =
             ctx.load_texture("vidstream", ColorImage::example(), options.texture_options);
         let (message_sender, message_reciever) = std::sync::mpsc::channel();
+
         let mut streamer = Self {
-            input_path: input_path.clone(),
+            input_path,
             audio_streamer: None,
             subtitle_streamer: None,
             video_streamer: Arc::new(Mutex::new(stream_decoder)),
